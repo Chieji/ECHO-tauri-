@@ -1,0 +1,47 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-echo-void text-echo-primary font-body overflow-hidden select-none;
+  }
+}
+
+.custom-titlebar {
+  @apply h-8 bg-echo-void flex items-center justify-between px-4 fixed top-0 left-0 right-0 z-50 select-none cursor-default;
+}
+
+.titlebar-drag {
+  @apply flex-grow h-full;
+}
+
+.sidebar-item {
+  @apply flex items-center gap-3 px-4 py-2 text-sm text-echo-muted hover:text-echo-cyan hover:bg-echo-cyan/5 transition-all duration-200 cursor-pointer;
+}
+
+.sidebar-item.active {
+  @apply text-echo-cyan bg-echo-cyan/10;
+}
+
+.waveform-pulse {
+  @apply flex items-center gap-1 h-8;
+}
+
+.waveform-bar {
+  @apply w-1 bg-echo-cyan rounded-full;
+  animation: waveform 1.2s ease-in-out infinite;
+}
+
+@keyframes waveform {
+  0%, 100% { height: 4px; }
+  50% { height: 24px; }
+}
+
+::-webkit-scrollbar {
+  @apply w-1;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-echo-muted/20 rounded-full hover:bg-echo-muted/40 transition-all;
+}

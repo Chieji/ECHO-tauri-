@@ -1,21 +1,24 @@
 // Learn more about Tauri commands at https://tauri.app/develop/calling-rust/
 use tauri::Manager;
 use window_vibrancy::{apply_blur, apply_vibrancy, NSVisualEffectMaterial};
+use std::thread;
+use std::time::Duration;
 
 #[tauri::command]
-fn greet(name: &str) -> String {
+async fn greet(name: &str) -> String {
     format!("Hello, {}! You've been greeted from Rust!", name)
 }
 
 #[tauri::command]
-fn echo_compute(input: String) -> String {
-    // Initial ECHO core logic bridge placeholder
+async fn echo_compute(input: String) -> String {
+    // Simulate "Thinking" time for the UI waveform
+    thread::sleep(Duration::from_millis(1200));
     format!("ECHO Core processed: {}", input)
 }
 
 #[tauri::command]
-fn get_echo_status() -> String {
-    "ECHO Core is operational".to_string()
+async fn get_echo_status() -> String {
+    "OPERATIONAL".to_string()
 }
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]

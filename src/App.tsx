@@ -1,75 +1,58 @@
-import { useState } from "react";
-import reactLogo from "./assets/react.svg";
-import { invoke } from "@tauri-apps/api/core";
-import "./App.css";
+import React from "react";
+import { TitleBar } from "./components/TitleBar";
+import { Sidebar } from "./components/Sidebar";
+import { MainCanvas } from "./components/MainCanvas";
+import { StatusBar } from "./components/StatusBar";
+import { motion, AnimatePresence } from "framer-motion";
 
 function App() {
-  const [greetMsg, setGreetMsg] = useState("");
-  const [name, setName] = useState("");
-  const [echoInput, setEchoInput] = useState("");
-  const [echoResult, setEchoResult] = useState("");
-  const [status, setStatus] = useState("Checking ECHO status...");
-
-  async function greet() {
-    // Learn more about Tauri commands at https://tauri.app/develop/calling-rust/
-    setGreetMsg(await invoke("greet", { name }));
-  }
-
-  async function computeEcho() {
-    setEchoResult(await invoke("echo_compute", { input: echoInput }));
-  }
-
-  async function checkStatus() {
-    setStatus(await invoke("get_echo_status"));
-  }
-
   return (
-    <main className="container">
-      <h1>ECHO Desktop</h1>
+    <div className="h-screen w-full flex flex-col bg-echo-void text-echo-primary relative overflow-hidden">
+      <TitleBar />
+      
+      <div className="flex-grow flex min-h-0 pt-8 pb-[28px]">
+        <Sidebar />
+        
+        <motion.div 
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.5, ease: "easeOut" }}
+          className="flex-grow flex flex-col min-w-0"
+        >
+          <MainCanvas />
+        </motion.div>
 
-      <div className="row">
-        <a href="https://vite.dev" target="_blank">
-          <img src="/vite.svg" className="logo vite" alt="Vite logo" />
-        </a>
-        <a href="https://tauri.app" target="_blank">
-          <img src="/tauri.svg" className="logo tauri" alt="Tauri logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+        {/* Right Panel - Metadata / Tool Logs (Collapsible Placeholder) */}
+        <div className="w-[280px] h-full bg-echo-void border-l border-echo-surface/50 hidden xl:flex flex-col p-6">
+          <h3 className="text-[10px] font-display uppercase tracking-[0.2em] text-echo-muted mb-6">Neural Context</h3>
+          
+          <div className="space-y-6">
+            <div className="space-y-2">
+              <span className="text-[9px] font-display text-echo-cyan/60 uppercase">Last Tool Execution</span>
+              <div className="bg-echo-surface/50 border border-echo-muted/10 rounded-lg p-3 font-display text-[10px] text-echo-muted leading-relaxed">
+                <span className="text-echo-cyan">execute_shell</span> --dir="/home/soweto"
+                <br/>
+                <span className="text-green-500/80">SUCCESS (24ms)</span>
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <span className="text-[9px] font-display text-echo-cyan/60 uppercase">Memory Index</span>
+              <div className="space-y-1">
+                {[1, 2, 3].map(i => (
+                  <div key={i} className="flex items-center justify-between text-[10px] font-body text-echo-muted/80 py-1 border-b border-echo-surface/30">
+                    <span>artifact_v1_{i}.md</span>
+                    <span className="text-[8px] font-display opacity-40">2m ago</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
-      <p>Click on the Tauri, Vite, and React logos to learn more.</p>
 
-      <form
-        className="row"
-        onSubmit={(e) => {
-          e.preventDefault();
-          greet();
-        }}
-      >
-        <input
-          id="greet-input"
-          onChange={(e) => setName(e.currentTarget.value)}
-          placeholder="Enter a name..."
-        />
-        <button type="submit">Greet</button>
-      </form>
-      <p>{greetMsg}</p>
-
-      <div className="row" style={{ marginTop: "20px" }}>
-        <input
-          onChange={(e) => setEchoInput(e.currentTarget.value)}
-          placeholder="ECHO input..."
-        />
-        <button onClick={computeEcho}>Compute</button>
-      </div>
-      <p>{echoResult}</p>
-
-      <div className="row" style={{ marginTop: "20px" }}>
-        <button onClick={checkStatus}>Check Status</button>
-      </div>
-      <p>{status}</p>
-    </main>
+      <StatusBar />
+    </div>
   );
 }
 
